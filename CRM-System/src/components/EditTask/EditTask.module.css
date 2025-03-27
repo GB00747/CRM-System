@@ -1,0 +1,66 @@
+.form {
+    display: flex;
+    justify-content: end;
+    gap: 12px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 8px;
+}
+
+.input {
+    margin-right: auto;
+    padding-inline: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+.input:focus {
+    border-color: #007bff;
+}
+
+.button{
+    padding: 8px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button:disabled {
+    background-color: #aaa;
+}
+
+.button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.button:hover .icon {
+    transform: rotate(10deg);
+    scale: 1.2;
+}
+
+.cancelButton {
+    background-color: #dc3545;
+}
+
+.cancelButton:hover {
+    background-color: #a71d2a;
+}
+
+.icon {
+    font-size: 20px;
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
