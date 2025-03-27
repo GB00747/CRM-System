@@ -156,6 +156,7 @@ export default function App() {
 						api = {TODO_API}
 						tasks={tasks}
 						setFilter = {setFilter}
+						filter = {filter}
 				/>
 
 				<TodoTasks
