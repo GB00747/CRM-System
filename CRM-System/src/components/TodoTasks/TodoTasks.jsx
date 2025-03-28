@@ -11,7 +11,6 @@ export default function TodoTasks({tasks, deleteTask, switchIsEditing, changeTas
 				>
 					{tasks.map((task) => (
 							<li
-									className={styles.todoItem}
 									key={task.id}
 							>
 								{task.isEditing ? (

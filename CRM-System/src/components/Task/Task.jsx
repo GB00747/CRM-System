@@ -4,7 +4,7 @@ import { AiFillDelete } from "react-icons/ai";
 
 export default function Task({ task, deleteTask, switchIsEditing, switchIsDone }) {
 	return (
-			<div className={styles.task}>
+			<div className={`${styles.task} ${task.hidden ? styles.hidden : ''}`}>
 				<input
 						type="checkbox"
 						checked={task.isDone}

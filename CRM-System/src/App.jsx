@@ -5,19 +5,18 @@ import TodoTasks from "./components/TodoTasks/TodoTasks.jsx";
 import TodoListOfTasks from "./components/TodoListOfTasks/TodoListOfTasks.jsx";
 
 
-export default function App() {
+export function App() {
 
 	const TODO_API = 'https://easydev.club/api/v1/todos'
 
 
 	const [tasks, setTasks] = useState([])
 	const [taskValue, setTaskValue] = useState('')
-	const [isCorrectValue, setIsCorrectValue] = useState(true)
 	const [filter, setFilter] = useState("all");
 
 
 	useEffect(() => {
-		 fetchFilteredTasks(filter);
+		fetchFilteredTasks(filter);
 	}, [filter]);
 
 
@@ -49,9 +48,15 @@ export default function App() {
 
 	const deleteTask = async (id) => {
 		try {
-			await fetch(`${TODO_API}/${id}`, {
+			const response = await fetch(`${TODO_API}/${id}`, {
 				method: 'DELETE',
 			});
+
+
+			 if (!response.ok) {
+				throw new Error("Ошибка при удалении задачи");
+			}
+
 			setTasks(tasks.filter(task => task.id !== id));
 		} catch (error) {
 			console.error('Ошибка удаления задачи:', error);
@@ -62,9 +67,7 @@ export default function App() {
 		element.preventDefault()
 		const checkLengthOfValue = taskValue.trim().length
 		if (checkLengthOfValue < 2 || checkLengthOfValue > 64) {
-			setIsCorrectValue(false)
 			alert('количество символов минимум 2 максимум 64')
-			setTaskValue('')
 			return
 		}
 
@@ -80,8 +83,12 @@ export default function App() {
 				}),
 			})
 
-			const data = await response.json()
-			setTasks([...tasks, data])
+			if (!response.ok) {
+				throw new Error('Ошибка добавления задачи');
+			}
+
+
+			await fetchFilteredTasks(filter)
 			setTaskValue('')
 		} catch (error) {
 			console.error('Ошибка добавления задачи:', error);
@@ -90,31 +97,51 @@ export default function App() {
 
 	const switchIsDone = async (id) => {
 		try {
-			const task = tasks.find(task => task.id === id)
-			const switchIsDoneForTask = {isDone: !task.isDone}
 
-			const response = await fetch(`${TODO_API}/${id}`, {
-				method: 'PUT',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify(switchIsDoneForTask),
-			})
+			const task = tasks.find((task) => task.id === id);
 
-			const data = await response.json()
-			setTasks(tasks.map((task) =>
-					task.id === id
-							? data
-							: task))
+			if (filter !== "all") {
+				setTasks((prevTasks) =>
+						prevTasks.map((task) =>
+								task.id === id
+										? { ...task, isDone: !task.isDone, hidden: true }
+										: task
+						)
+				);
+
+				await fetch(`${TODO_API}/${id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ isDone: !task.isDone }),
+				});
+
+
+				setTimeout(() => fetchFilteredTasks(filter), 300);
+			} else {
+
+				setTasks((prevTasks) =>
+						prevTasks.map((task) =>
+								task.id === id
+										? { ...task, isDone: !task.isDone }
+										: task
+						)
+				);
+
+				await fetch(`${TODO_API}/${id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ isDone: !task.isDone }),
+				});
+
+
+				await fetchFilteredTasks(filter);
+			}
 		} catch (error) {
-			console.error('Ошибка изменения статуса:', error)
+			console.error("Ошибка изменения статуса:", error);
 		}
+	};
 
 
-		setTasks(tasks.map((task) =>
-				task.id === id
-						? {...task, isDone: !task.isDone}
-						: task
-		))
-	}
 
 	const changeValueInInput = async (event, id, value) => {
 		event.preventDefault();
@@ -134,10 +161,11 @@ export default function App() {
 
 
 			setTasks(tasks.map(task =>
-					task.id === id ? { ...task, title: updatedTask.title , isEditing: !task.isEditing} : task
+					task.id === id
+							? { ...task, title: updatedTask.title , isEditing: !task.isEditing}
+							: task
 			));
 
-			console.log('Значение задачи успешно обновлено!');
 		} catch (error) {
 			console.error('Ошибка при изменении задачи:', error);
 		}

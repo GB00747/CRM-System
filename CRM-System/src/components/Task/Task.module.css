@@ -6,8 +6,14 @@
     border: 1px solid #ddd;
     border-radius: 6px;
     background: #f8f9fa;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
     margin-bottom: 8px;
+
+}
+
+.hidden {
+    opacity: 0;
+    transform: translateX(20px);
 }
 
 .task:hover {

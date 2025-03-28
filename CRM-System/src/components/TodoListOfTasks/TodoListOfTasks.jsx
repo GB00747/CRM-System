@@ -3,6 +3,7 @@ import styles from "./TodoListOfTasks.module.css";
 
 export default function TodoListOfTasks({setFilter, tasks, api, filter}) {
 	const [taskCounts, setTaskCounts] = useState({all: 0, inWork: 0, completed: 0});
+
 	useEffect(() => {
 		fetchTaskCounts();
 	}, [tasks]);
