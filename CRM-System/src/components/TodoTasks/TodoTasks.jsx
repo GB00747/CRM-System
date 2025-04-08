@@ -1,26 +1,12 @@
 import Task from "../Task/Task.jsx";
 import styles from "./TodoTasks.module.css";
 
-export default function TodoTasks({
-  tasks,
-  deleteTask,
-  changeValueInInput,
-  switchIsDone,
-  filter,
-}) {
+export default function TodoTasks({ tasks, updateTasks }) {
   return (
     <div>
       <ul className={styles.todoList}>
         {tasks.map((task) => (
-          <li key={task.id}>
-            <Task
-              task={task}
-              deleteTask={deleteTask}
-              switchIsDone={switchIsDone}
-              changeValueInInput={changeValueInInput}
-              filter={filter}
-            />
-          </li>
+          <Task key={task.id} task={task} updateTasks={updateTasks} />
         ))}
       </ul>
     </div>

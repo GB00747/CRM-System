@@ -1,20 +1,5 @@
 const TODO_API = "https://easydev.club/api/v1/todos";
 
-const apiRequest = async (endpoint, options = {}) => {
-  try {
-    const response = await fetch(`${TODO_API}${endpoint}`, options);
-
-    if (!response.ok) {
-      throw new Error(`Ошибка: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Ошибка запроса:", error.message);
-    return null;
-  }
-};
-
 export const deleteTaskApi = async (id) => {
   try {
     const response = await fetch(`${TODO_API}/${id}`, {
@@ -33,35 +18,84 @@ export const deleteTaskApi = async (id) => {
   }
 };
 
-export const fetchFilteredTasksApi = async (filter) => {
-  return apiRequest(`?filter=${filter}`);
+export const filteredTasksApi = async (filter) => {
+  try {
+    const response = await fetch(`${TODO_API}?filter=${filter}`);
+
+    if (!response.ok) {
+      throw new Error(`Ошибка: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Ошибка запроса:", error.message);
+    return null;
+  }
 };
 
 export const addTaskApi = async (title) => {
-  return apiRequest("", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      title: title,
-    }),
-  });
+  try {
+    const response = await fetch(TODO_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Ошибка запроса:", error.message);
+    return null;
+  }
 };
 
 export const updateTaskStatusApi = async (id) => {
-  const task = await apiRequest(`/${id}`);
-  const isDone = task.isDone;
+  try {
+    const getResponse = await fetch(`${TODO_API}/${id}`);
+    if (!getResponse.ok) {
+      throw new Error(`Ошибка при получении задачи: ${getResponse.statusText}`);
+    }
 
-  return apiRequest(`/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ isDone: !isDone }),
-  });
+    const task = await getResponse.json();
+    const isDone = task.isDone;
+
+    const putResponse = await fetch(`${TODO_API}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isDone: !isDone }),
+    });
+
+    if (!putResponse.ok) {
+      throw new Error(`Ошибка при обновлении: ${putResponse.statusText}`);
+    }
+
+    return await putResponse.json();
+  } catch (error) {
+    console.error("Ошибка запроса:", error.message);
+    return null;
+  }
 };
 
 export const updateTaskTitleApi = async (id, title) => {
-  return apiRequest(`/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title }),
-  });
+  try {
+    const response = await fetch(`${TODO_API}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка изменения задачи: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Ошибка запроса:", error.message);
+    return null;
+  }
 };
